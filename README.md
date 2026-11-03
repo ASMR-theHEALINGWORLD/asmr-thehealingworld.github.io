@@ -1,5 +1,7 @@
 # ☁ 힐링 월드 (Healing World)
 
+🌐 **https://asmr-thehealingworld.github.io/**
+
 귀여운 3D 미니어처 캐릭터들이 사는 디오라마 공간을 둘러보며 ASMR 사운드를 믹싱해 듣는 힐링 웹 앱 (MVP).
 
 - **React 18 + TypeScript + Vite**
@@ -20,6 +22,7 @@ npm run preview    # 빌드 결과 미리보기
 1. GitHub 에 **Public** 저장소를 만들고 이 코드를 `main` 브랜치에 push 합니다.
 2. 저장소 **Settings → Pages → Build and deployment → Source** 를 **GitHub Actions** 로 바꿉니다.
 3. 1~2분 뒤 `https://<아이디>.github.io/<저장소이름>/` 에서 열립니다.
+   저장소 이름을 `<아이디>.github.io` 로 지으면 `https://<아이디>.github.io/` 로 바로 열립니다 (이 저장소가 그 방식).
    이후에는 `main` 에 push 할 때마다 `.github/workflows/deploy.yml` 이 자동으로 다시 배포합니다.
 
 ## 화면 구성
