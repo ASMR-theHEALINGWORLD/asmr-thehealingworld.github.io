@@ -147,3 +147,11 @@ vite.config.ts.timestamp-*
 
 # Turbo Repo
 .turbo
+
+# Healing World
+node_modules
+dist
+*.zip
+healing-world-standalone.html
+screenshots/
+*.tsbuildinfo
