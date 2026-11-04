@@ -1,0 +1,36 @@
+# asmr-healingworld.com 의 HTTPS(보안 인증서) 발급을 15분마다 확인하고,
+# 준비되면 이슈로 알린 뒤 스스로 꺼집니다.
+name: Check custom domain HTTPS
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+
+permissions:
+  issues: write
+  actions: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check domain
+        id: c
+        run: |
+          D=asmr-healingworld.com
+          echo "DNS: $(getent hosts $D | awk '{print $1}' | tr '\n' ' ')"
+          HTTP=$(curl -s -o /dev/null -w '%{http_code}' -m 20 http://$D/ || true)
+          HTTPS=$(curl -s -o /dev/null -w '%{http_code}' -m 20 https://$D/ || true)
+          WWW=$(curl -s -o /dev/null -w '%{http_code}' -m 20 https://www.$D/ || true)
+          echo "RESULT http=$HTTP https=$HTTPS www=$WWW"
+          echo "https=$HTTPS" >> "$GITHUB_OUTPUT"
+      - name: Notify when ready
+        if: steps.c.outputs.https == '200'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue create --repo "${{ github.repository }}" \
+            --title "✅ asmr-healingworld.com HTTPS 준비 완료" \
+            --body "@khni0338-hub 보안 인증서가 발급되어 https://asmr-healingworld.com/ 이 열려요. 이제 Settings → Pages 에서 **Enforce HTTPS** 에 체크해 주세요."
+          gh workflow disable check-domain.yml --repo "${{ github.repository }}"
