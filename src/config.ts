@@ -9,4 +9,4 @@
  */
 export const CLOUDFLARE_ANALYTICS_TOKEN = '';
 
-export const SITE_URL = 'https://asmr-thehealingworld.github.io/';
+export const SITE_URL = 'https://asmr-healingworld.com/';

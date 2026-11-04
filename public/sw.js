@@ -2,7 +2,7 @@
  * - 페이지(index.html): 네트워크 우선 → 실패하면 저장본
  * - 그 외 파일(js/css/폰트/아이콘): 저장본 우선, 뒤에서 최신으로 갱신
  * 새 버전을 배포하면 VERSION 을 올려 오래된 저장본을 정리하세요. */
-const VERSION = 'hw-v2';
+const VERSION = 'hw-v3';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png'];
 
 self.addEventListener('install', (e) => {

@@ -1,6 +1,6 @@
 # ☁ 힐링 월드 (Healing World)
 
-🌐 **https://asmr-thehealingworld.github.io/**
+🌐 **https://asmr-healingworld.com/**
 
 귀여운 3D 미니어처 캐릭터들이 사는 디오라마 공간을 둘러보며 ASMR 사운드를 믹싱해 듣는 힐링 웹 앱 (MVP).
 
