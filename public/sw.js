@@ -2,7 +2,7 @@
  * - 페이지(index.html): 네트워크 우선 → 실패하면 저장본
  * - 그 외 파일(js/css/폰트/아이콘): 저장본 우선, 뒤에서 최신으로 갱신
  * 새 버전을 배포하면 VERSION 을 올려 오래된 저장본을 정리하세요. */
-const VERSION = 'hw-v2';
+const VERSION = 'hw-v3';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './icons/icon-192.png', './icons/icon-512.png'];
 
 self.addEventListener('install', (e) => {
@@ -30,11 +30,14 @@ self.addEventListener('fetch', (e) => {
     e.respondWith(
       fetch(req)
         .then((res) => {
-          const copy = res.clone();
-          caches.open(VERSION).then((c) => c.put('./index.html', copy));
+          // 페이지마다 따로 저장 (예: /office/ 를 열어도 메인 index.html 저장본을 덮어쓰지 않도록)
+          if (res.ok) {
+            const copy = res.clone();
+            caches.open(VERSION).then((c) => c.put(req, copy));
+          }
           return res;
         })
-        .catch(() => caches.match('./index.html')),
+        .catch(() => caches.match(req, { ignoreSearch: true }).then((hit) => hit || caches.match('./index.html'))),
     );
     return;
   }
