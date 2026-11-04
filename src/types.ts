@@ -54,7 +54,8 @@ export interface WorldDef {
 export type Route =
   | { name: 'home' }
   | { name: 'map' }
-  | { name: 'world'; id: string };
+  | { name: 'me'; tab?: 'record' | 'avatar' | 'settings' }
+  | { name: 'world'; id: string; mix?: string };
 
 export interface SoundMix {
   on: boolean;

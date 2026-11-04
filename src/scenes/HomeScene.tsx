@@ -1,4 +1,6 @@
-import { OrbitControls, RoundedBox, Sparkles } from '@react-three/drei';
+import { OrbitControls, RoundedBox, Sparkles, Stars } from '@react-three/drei';
+import { SKY, type SkyPalette } from '../hooks/useDayPhase';
+import { SeasonalEffect } from '../three/Seasonal';
 import { useFrame } from '@react-three/fiber';
 import { useRef } from 'react';
 import * as THREE from 'three';
@@ -69,7 +71,7 @@ function Picnic(props: JSX.IntrinsicElements['group']) {
   );
 }
 
-export function HomeScene({ offsetX = 0, mobile = false }: { offsetX?: number; mobile?: boolean }) {
+export function HomeScene({ offsetX = 0, mobile = false, sky = SKY.day }: { offsetX?: number; mobile?: boolean; sky?: SkyPalette }) {
   const island = useRef<THREE.Group>(null);
   useFrame(({ clock }) => {
     if (island.current) {
@@ -79,11 +81,13 @@ export function HomeScene({ offsetX = 0, mobile = false }: { offsetX?: number; m
   });
   return (
     <>
-      <color attach="background" args={['#d7eef6']} />
-      <fog attach="fog" args={['#d7eef6', 14, 30]} />
-      <ambientLight intensity={0.8} color="#fff6ea" />
-      <hemisphereLight args={['#ffffff', '#9fd0e0', 0.8]} />
-      <directionalLight position={[5, 8, 5]} intensity={1.8} color="#fff1dc" castShadow shadow-mapSize={[1024, 1024]} shadow-camera-left={-4} shadow-camera-right={4} shadow-camera-top={4} shadow-camera-bottom={-4} />
+      <color attach="background" args={[sky.bg]} />
+      <fog attach="fog" args={[sky.fog, 14, 30]} />
+      <ambientLight intensity={sky.ambient} color="#fff6ea" />
+      <hemisphereLight args={sky.hemi} />
+      {sky.stars && <Stars radius={50} depth={20} count={1200} factor={3} saturation={0} fade speed={0.5} />}
+      <SeasonalEffect count={50} area={7} />
+      <directionalLight position={[5, 8, 5]} intensity={sky.sun[1]} color={sky.sun[0]} castShadow shadow-mapSize={[1024, 1024]} shadow-camera-left={-4} shadow-camera-right={4} shadow-camera-top={4} shadow-camera-bottom={-4} />
 
       <group position={[offsetX, 0, 0]}>
         <group ref={island}>
@@ -105,7 +109,7 @@ export function HomeScene({ offsetX = 0, mobile = false }: { offsetX?: number; m
       {/* 바다 */}
       <mesh position={[0, -3.2, 0]} rotation={[-Math.PI / 2, 0, 0]}>
         <circleGeometry args={[40, 48]} />
-        <Soft color="#9fd8ec" rough={0.3} />
+        <Soft color={sky.sea} rough={0.3} />
       </mesh>
       <Sparkles count={60} scale={[24, 0.4, 16]} position={[0, -3, 0]} size={4} speed={0.3} color="#ffffff" />
 

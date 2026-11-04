@@ -24,6 +24,11 @@ class AudioEngine {
   private sfxBuffers = new Map<SfxKind, AudioBuffer>();
   private channels = new Map<string, Channel>();
   private muted = false;
+  /** 수면 타이머 페이드아웃용 전체 레벨 (0~1) */
+  private level = 1;
+  private out: AudioNode | null = null;
+  private mediaEl: HTMLAudioElement | null = null;
+  private mediaRouted = false;
   /** 사운드 출처 기록 (file | synth) — UI 표시용 */
   readonly origin = new Map<string, 'file' | 'synth'>();
 
@@ -32,12 +37,13 @@ class AudioEngine {
       const Ctx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
       this.ctx = new Ctx();
       this.master = this.ctx.createGain();
-      this.master.gain.value = this.muted ? 0 : 1;
+      this.master.gain.value = this.muted ? 0 : this.level;
       // 부드러운 컴프레서로 여러 사운드를 섞어도 튀지 않게
       const comp = this.ctx.createDynamicsCompressor();
       comp.threshold.value = -14;
       comp.ratio.value = 3;
       this.master.connect(comp).connect(this.ctx.destination);
+      this.out = comp;
     }
     if (this.ctx.state === 'suspended') void this.ctx.resume();
     return this.ctx;
@@ -46,6 +52,35 @@ class AudioEngine {
   /** 사용자 제스처 안에서 호출해 오디오를 깨웁니다 (모바일 대응) */
   unlock() {
     this.ensure();
+    this.routeThroughMediaElement();
+  }
+
+  /**
+   * 소리를 숨겨진 <audio> 요소로 내보냅니다.
+   * 이렇게 하면 휴대폰 잠금화면/알림창에 재생 컨트롤(Media Session)이 나타나고,
+   * 일부 브라우저에서 화면을 꺼도 소리가 이어집니다. 실패하면 기존 방식 그대로 재생해요.
+   */
+  private routeThroughMediaElement() {
+    const ctx = this.ctx;
+    if (!ctx || !this.out || this.mediaRouted || typeof ctx.createMediaStreamDestination !== 'function') return;
+    this.mediaRouted = true;
+    try {
+      const dest = ctx.createMediaStreamDestination();
+      const el = new Audio();
+      el.srcObject = dest.stream;
+      el.setAttribute('playsinline', '');
+      this.mediaEl = el;
+      el.play()
+        .then(() => {
+          this.out!.disconnect();
+          this.out!.connect(dest);
+        })
+        .catch(() => {
+          this.mediaEl = null;
+        });
+    } catch {
+      this.mediaEl = null;
+    }
   }
 
   private toBuffer(data: Float32Array): AudioBuffer {
@@ -149,7 +184,22 @@ class AudioEngine {
 
   setMuted(m: boolean) {
     this.muted = m;
-    if (this.master && this.ctx) this.master.gain.setTargetAtTime(m ? 0 : 1, this.ctx.currentTime, 0.1);
+    this.applyMaster();
+  }
+
+  /** 잠금화면 컨트롤용 <audio> 경로가 활성화되었는지 */
+  get mediaActive() {
+    return this.mediaEl !== null;
+  }
+
+  /** 전체 레벨 (수면 타이머가 마지막 1분 동안 서서히 줄여요) */
+  setLevel(v: number) {
+    this.level = Math.max(0, Math.min(1, v));
+    this.applyMaster();
+  }
+
+  private applyMaster() {
+    if (this.master && this.ctx) this.master.gain.setTargetAtTime(this.muted ? 0 : this.level, this.ctx.currentTime, 0.1);
   }
 
   /** 짧은 인터랙션 효과음 */

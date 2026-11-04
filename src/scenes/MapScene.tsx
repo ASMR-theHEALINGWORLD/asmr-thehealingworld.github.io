@@ -1,4 +1,7 @@
-import { Html, Sparkles } from '@react-three/drei';
+import { Html, Sparkles, Stars } from '@react-three/drei';
+import { SKY, type SkyPalette } from '../hooks/useDayPhase';
+import { useUser } from '../store/userStore';
+import { SeasonalEffect } from '../three/Seasonal';
 import { useFrame, useThree } from '@react-three/fiber';
 import { useLayoutEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import * as THREE from 'three';
@@ -46,6 +49,8 @@ function MapIsland({ world, index, position, onSelect, onHover, active, showLabe
     g.rotation.y = THREE.MathUtils.damp(g.rotation.y, (lift ? 0.25 : 0) + Math.sin(t * 0.3) * 0.08, 3, dt);
   });
   const { Diorama } = scene;
+  const fav = useUser((u) => u.favorites.includes(world.id));
+  const recent = useUser((u) => u.recent[0] === world.id);
   return (
     <group position={position}>
       <group
@@ -91,7 +96,11 @@ function MapIsland({ world, index, position, onSelect, onHover, active, showLabe
       {showLabel && (
       <Html position={[0, -0.9, 1.75]} center zIndexRange={[10, 0]} style={{ pointerEvents: 'none' }}>
         <div className={`map-label ${lift ? 'is-lift' : ''}`} style={{ ['--accent' as string]: world.theme.accent }}>
-          <span className="map-label__no">WORLD {world.no}</span>
+          <span className="map-label__no">
+            WORLD {world.no}
+            {fav && <i className="map-label__badge">♥</i>}
+            {recent && <i className="map-label__badge map-label__badge--recent">최근</i>}
+          </span>
           <strong>{world.title}</strong>
           <span className="map-label__tag">{world.tagline}</span>
         </div>
@@ -120,14 +129,16 @@ function CameraRig({ compact, focus }: { compact: boolean; focus: number }) {
   return null;
 }
 
-export function MapScene({ compact, focus, onSelect, onFocus }: { compact: boolean; focus: number; onSelect: (id: string) => void; onFocus: (i: number) => void }) {
+export function MapScene({ compact, focus, onSelect, onFocus, sky = SKY.day }: { compact: boolean; focus: number; onSelect: (id: string) => void; onFocus: (i: number) => void; sky?: SkyPalette }) {
   return (
     <>
-      <color attach="background" args={['#e3f1f2']} />
-      <fog attach="fog" args={['#e3f1f2', 16, 36]} />
-      <ambientLight intensity={0.75} color="#fff8ee" />
-      <hemisphereLight args={['#ffffff', '#a7d5df', 0.8]} />
-      <directionalLight position={[4, 10, 6]} intensity={1.7} color="#fff3e0" castShadow shadow-mapSize={[2048, 1024]} shadow-camera-left={-11} shadow-camera-right={11} shadow-camera-top={5} shadow-camera-bottom={-5} />
+      <color attach="background" args={[sky.bg]} />
+      <fog attach="fog" args={[sky.fog, 16, 36]} />
+      <ambientLight intensity={sky.ambient} color="#fff8ee" />
+      <hemisphereLight args={sky.hemi} />
+      {sky.stars && <Stars radius={60} depth={25} count={1500} factor={3} saturation={0} fade speed={0.5} />}
+      <SeasonalEffect count={70} area={12} height={10} />
+      <directionalLight position={[4, 10, 6]} intensity={sky.sun[1]} color={sky.sun[0]} castShadow shadow-mapSize={[2048, 1024]} shadow-camera-left={-11} shadow-camera-right={11} shadow-camera-top={5} shadow-camera-bottom={-5} />
 
       {WORLDS.map((w, i) => (
         <MapIsland key={w.id} world={w} index={i} position={islandPos(i, compact)} onSelect={onSelect} onHover={(h) => h !== null && !compact && onFocus(h)} active={compact ? focus === i : false} showLabel={!compact} />
@@ -135,7 +146,7 @@ export function MapScene({ compact, focus, onSelect, onFocus }: { compact: boole
 
       <mesh position={[0, -2.6, 0]} rotation={[-Math.PI / 2, 0, 0]}>
         <circleGeometry args={[50, 48]} />
-        <meshStandardMaterial color="#b8e2ec" roughness={0.35} />
+        <meshStandardMaterial color={sky.sea} roughness={0.35} />
       </mesh>
       <Sparkles count={70} scale={[30, 0.5, 14]} position={[0, -2.4, 0]} size={4} speed={0.3} color="#ffffff" />
       <Cloud position={[-9, 2.6, -4]} scale={1.2} />

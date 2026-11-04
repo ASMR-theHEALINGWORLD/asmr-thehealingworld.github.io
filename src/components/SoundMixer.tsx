@@ -3,7 +3,8 @@ import { audioEngine } from '../audio/AudioEngine';
 import { useSoundStore } from '../hooks/useSoundStore';
 import { useIsMobile } from '../hooks/useMediaQuery';
 import type { WorldDef } from '../types';
-import { ChevronUp, PauseIcon, PlayIcon, ResetIcon } from './Icons';
+import { ChevronUp, PauseIcon, PlayIcon } from './Icons';
+import { MixExtras } from './MixExtras';
 
 function Eq({ active }: { active: boolean }) {
   return (
@@ -16,7 +17,7 @@ function Eq({ active }: { active: boolean }) {
 }
 
 export function SoundMixer({ world }: { world: WorldDef }) {
-  const { mixes, updateSound, playing, setPlaying, muted, resetWorld } = useSoundStore();
+  const { mixes, updateSound, playing, setPlaying, muted } = useSoundStore();
   const isMobile = useIsMobile();
   const [open, setOpen] = useState(!isMobile);
   useEffect(() => setOpen(!isMobile), [isMobile]);
@@ -93,9 +94,7 @@ export function SoundMixer({ world }: { world: WorldDef }) {
             );
           })}
         </ul>
-        <button className="mixer__reset" onClick={() => resetWorld(world.id)}>
-          <ResetIcon /> 기본 믹스로
-        </button>
+        <MixExtras world={world} />
         </div>
       </div>
     </aside>

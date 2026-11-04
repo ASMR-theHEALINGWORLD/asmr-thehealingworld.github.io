@@ -15,6 +15,8 @@ interface SoundStore {
   mixes: Mixes;
   updateSound: (worldId: string, soundId: string, patch: Partial<SoundMix>) => void;
   resetWorld: (worldId: string) => void;
+  /** 프리셋/공유 링크로 월드 믹스 전체를 바꿉니다 */
+  setWorldMix: (worldId: string, mix: Record<string, SoundMix>) => void;
 }
 
 const STORAGE_KEY = 'healing-world:mix:v1';
@@ -50,6 +52,7 @@ export function SoundStoreProvider({ children }: { children: ReactNode }) {
   }, []);
   const resetWorld = useCallback((worldId: string) => setMixes((m) => ({ ...m, [worldId]: defaults()[worldId] })), []);
   const toggleMute = useCallback(() => setMuted((v) => !v), []);
+  const setWorldMix = useCallback((worldId: string, mix: Record<string, SoundMix>) => setMixes((m) => ({ ...m, [worldId]: { ...defaults()[worldId], ...mix } })), []);
 
   useEffect(() => {
     try {
@@ -68,8 +71,8 @@ export function SoundStoreProvider({ children }: { children: ReactNode }) {
   }, [activeWorldId, mixes, playing]);
 
   const value = useMemo(
-    () => ({ activeWorldId, setActiveWorld, playing, setPlaying, muted, toggleMute, mixes, updateSound, resetWorld }),
-    [activeWorldId, playing, muted, toggleMute, mixes, updateSound, resetWorld],
+    () => ({ activeWorldId, setActiveWorld, playing, setPlaying, muted, toggleMute, mixes, updateSound, resetWorld, setWorldMix }),
+    [activeWorldId, playing, muted, toggleMute, mixes, updateSound, resetWorld, setWorldMix],
   );
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }
