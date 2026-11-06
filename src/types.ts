@@ -41,6 +41,7 @@ export interface WorldDef {
   no: string;
   title: string;
   englishTitle: string;
+  /** 짧은 소개. 줄을 바꾸고 싶은 곳에 \n 을 넣으면 그 자리에서 줄바꿈돼요 */
   tagline: string;
   description: string;
   moods: string[];

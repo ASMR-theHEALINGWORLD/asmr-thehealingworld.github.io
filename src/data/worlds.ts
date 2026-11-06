@@ -44,7 +44,7 @@ export const WORLDS: WorldDef[] = [
     no: '02',
     title: '파란빛이 머무는 바닷속',
     englishTitle: 'Where the Blue Light Stays',
-    tagline: '보글보글, 물고기와 함께 떠다니는 시간',
+    tagline: '보글보글, 물고기와 함께\n바닷속을 떠다니는 시간',
     description:
       '푸른 바닷속 깊은 곳의 신비로운 해저 세계. 스노클링을 하며 물고기와 놀고 산호초 사이를 천천히 헤엄쳐요.',
     moods: ['신비로움', '고요함', '청량함', '몽환적'],

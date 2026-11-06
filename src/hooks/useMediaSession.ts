@@ -9,7 +9,7 @@ export function useMediaSession(world: WorldDef, playing: boolean, h: { play: ()
     ms.metadata = new MediaMetadata({
       title: world.title,
       artist: '힐링 월드',
-      album: world.tagline,
+      album: world.tagline.replace(/\n/g, ' '),
       artwork: [
         { src: './icons/icon-192.png', sizes: '192x192', type: 'image/png' },
         { src: './icons/icon-512.png', sizes: '512x512', type: 'image/png' },

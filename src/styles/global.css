@@ -124,7 +124,7 @@ h1, h2, p { margin: 0; }
 }
 .map-label strong { font-family: var(--font-display); font-weight: 400; font-size: 17px; color: #4f423d; }
 .map-label__no { font-size: 11px; letter-spacing: 0.2em; font-weight: 700; color: var(--accent); }
-.map-label__tag { font-size: 12px; text-wrap: balance; color: var(--ink-soft); max-height: 0; opacity: 0; overflow: hidden; transition: max-height 0.35s, opacity 0.35s; }
+.map-label__tag { font-size: 12px; white-space: pre-line; text-wrap: balance; color: var(--ink-soft); max-height: 0; opacity: 0; overflow: hidden; transition: max-height 0.35s, opacity 0.35s; }
 .map-label.is-lift .map-label__tag { max-height: 40px; opacity: 1; }
 .map-label.is-lift { transform: translateY(-6px) scale(1.04); box-shadow: 0 18px 36px -14px rgba(60, 80, 90, 0.5); }
 
@@ -505,7 +505,7 @@ a.pill, a.cta { text-decoration: none; }
 .map-list__item { display: flex; flex-direction: column; gap: 6px; align-items: flex-start; text-align: left; padding: 22px; border-radius: 24px; color: #fff; text-shadow: 0 1px 8px rgba(0,0,0,0.18); box-shadow: var(--shadow); transition: transform 0.25s; min-height: 140px; }
 .map-list__item:hover { transform: translateY(-3px); }
 .map-list__item strong { font-family: var(--font-display); font-weight: 400; font-size: 22px; }
-.map-list__item span { font-size: 13px; opacity: 0.92; }
+.map-list__item span { font-size: 13px; opacity: 0.92; white-space: pre-line; }
 .map-list__no { font-size: 11px !important; letter-spacing: 0.18em; font-weight: 700; }
 
 /* ===================== 마이 힐링 ===================== */
