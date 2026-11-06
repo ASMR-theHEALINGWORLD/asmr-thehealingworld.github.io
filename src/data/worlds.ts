@@ -14,7 +14,7 @@ export const WORLDS: WorldDef[] = [
     no: '01',
     title: '별빛 아래 모닥불',
     englishTitle: 'Campfire under the Stars',
-    tagline: '타닥타닥, 불멍하며 마시멜로 굽는 밤',
+    tagline: '타닥타닥,\n불멍하며 마시멜로 굽는 밤',
     description:
       '깊은 숲속, 커다란 모닥불이 타오르는 아늑한 캠핑장. 친구들과 둘러앉아 불꽃을 바라보며 따뜻한 밤을 보내요.',
     moods: ['따뜻함', '포근함', '아늑함', '안정감'],
@@ -44,7 +44,7 @@ export const WORLDS: WorldDef[] = [
     no: '02',
     title: '파란빛이 머무는 바닷속',
     englishTitle: 'Where the Blue Light Stays',
-    tagline: '보글보글, 물고기와 함께\n바닷속을 떠다니는 시간',
+    tagline: '보글보글,\n물고기와 함께 바닷속을 떠다니는 시간',
     description:
       '푸른 바닷속 깊은 곳의 신비로운 해저 세계. 스노클링을 하며 물고기와 놀고 산호초 사이를 천천히 헤엄쳐요.',
     moods: ['신비로움', '고요함', '청량함', '몽환적'],
@@ -74,7 +74,7 @@ export const WORLDS: WorldDef[] = [
     no: '03',
     title: '오후 네 시의 작은 서점',
     englishTitle: 'A Little Bookshop at 4 PM',
-    tagline: '사각사각, 빗소리와 함께 책장을 넘기는 오후',
+    tagline: '사각사각,\n빗소리와 함께 책장을 넘기는 오후',
     description:
       '골목 한편의 작고 아늑한 동네 서점. 창가에 앉아 차를 마시고, 좋아하는 책을 천천히 넘기며 여유를 즐겨요.',
     moods: ['차분함', '따뜻함', '평온함', '집중력'],
@@ -105,7 +105,7 @@ export const WORLDS: WorldDef[] = [
     no: '04',
     title: '구름 위 낮잠 정거장',
     englishTitle: 'Nap Stop above the Clouds',
-    tagline: '살랑살랑, 구름 침대에서 스르르 낮잠',
+    tagline: '살랑살랑,\n구름 침대에서 스르륵 빠지는 낮잠',
     description:
       '하늘 위에 떠 있는 작은 구름 섬. 폭신한 구름 침대에 누워 낮잠을 자거나, 구름 사이를 둥둥 떠다니며 쉬어가요.',
     moods: ['가벼움', '포근함', '몽환적', '해방감'],
@@ -135,7 +135,7 @@ export const WORLDS: WorldDef[] = [
     no: '05',
     title: '비밀의 이끼 정원',
     englishTitle: 'The Secret Moss Garden',
-    tagline: '바스락, 요정들이 사는 숲속 정원',
+    tagline: '바스락,\n요정들이 사는 숲속 정원',
     description:
       '커다란 나무와 버섯 집이 가득한 신비로운 숲속 정원. 요정과 동물 친구들이 풀밭을 거닐고, 그루터기에 앉아 숲의 소리를 들어요.',
     moods: ['자연 친화적', '평온함', '신비로움', '안정감'],
@@ -166,7 +166,7 @@ export const WORLDS: WorldDef[] = [
     no: '06',
     title: '달빛 기차역',
     englishTitle: 'Moonlight Station',
-    tagline: '덜컹덜컹, 모두가 잠든 새벽의 작은 역',
+    tagline: '덜컹덜컹,\n모두가 잠든 새벽의 작은 역',
     description:
       '모두가 잠든 새벽, 달빛 아래 조용히 운행하는 작은 기차역. 플랫폼 벤치에서 기차를 기다리거나 창가 좌석에서 밤 풍경을 바라봐요.',
     moods: ['고요함', '아늑함', '향수', '혼자만의 시간'],

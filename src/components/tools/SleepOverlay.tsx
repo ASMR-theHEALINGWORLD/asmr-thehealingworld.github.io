@@ -3,10 +3,12 @@ import { comfortOfDay } from '../../data/comfort';
 import { formatClock } from '../../store/dates';
 import { sessionActions, useSession } from '../../store/session';
 
-/** 수면 모드: 화면을 아주 어둡게 하고, 시계와 남은 타이머만 은은하게 */
+const OPTIONS = [15, 30, 45, 60, 90];
+
+/** 수면 모드: 화면을 아주 어둡게 하고, 시계와 '소리 끌 시간'만 은은하게 */
 export function SleepOverlay() {
   const on = useSession((s) => s.sleepMode);
-  const endsAt = useSession((s) => s.sleep.endsAt);
+  const sleep = useSession((s) => s.sleep);
   const [now, setNow] = useState(() => new Date());
   useEffect(() => {
     if (!on) return;
@@ -16,8 +18,9 @@ export function SleepOverlay() {
   if (!on) return null;
   const hh = String(now.getHours()).padStart(2, '0');
   const mm = String(now.getMinutes()).padStart(2, '0');
+  const active = sleep.endsAt !== null;
   return (
-    <button className="sleep-overlay" onClick={() => sessionActions.setSleepMode(false)} aria-label="수면 모드 끄기">
+    <div className="sleep-overlay" role="dialog" aria-label="수면 모드" onClick={() => sessionActions.setSleepMode(false)}>
       <span className="sleep-overlay__glow" aria-hidden />
       <span className="sleep-overlay__clock">
         {hh}
@@ -25,8 +28,24 @@ export function SleepOverlay() {
         {mm}
       </span>
       <span className="sleep-overlay__msg">{comfortOfDay()}</span>
-      {endsAt !== null && <span className="sleep-overlay__timer">🌙 {formatClock(endsAt - now.getTime())} 뒤에 소리가 꺼져요</span>}
-      <span className="sleep-overlay__hint">화면을 누르면 깨어나요</span>
-    </button>
+      <div className="sleep-overlay__timer" onClick={(e) => e.stopPropagation()}>
+        <span className="sleep-overlay__label">
+          {active ? <>🌙 {formatClock(sleep.endsAt! - now.getTime())} 뒤에 소리가 서서히 꺼져요</> : '🌙 언제 소리를 끌까요?'}
+        </span>
+        <div className="sleep-overlay__chips">
+          {OPTIONS.map((m) => (
+            <button key={m} className={`sleep-chip ${active && sleep.minutes === m ? 'is-on' : ''}`} onClick={() => sessionActions.startSleep(m)}>
+              {m}분
+            </button>
+          ))}
+          <button className={`sleep-chip ${!active ? 'is-on' : ''}`} onClick={() => sessionActions.stopSleep()}>
+            끄지 않기
+          </button>
+        </div>
+      </div>
+      <button className="sleep-overlay__wake" onClick={() => sessionActions.setSleepMode(false)}>
+        수면 모드 끄기
+      </button>
+    </div>
   );
 }

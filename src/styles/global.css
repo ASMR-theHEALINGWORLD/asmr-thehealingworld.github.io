@@ -115,7 +115,7 @@ h1, h2, p { margin: 0; }
 
 .map-label {
   display: flex; flex-direction: column; align-items: center; gap: 2px; text-align: center;
-  width: 210px; padding: 9px 14px 10px; border-radius: 18px;
+  width: 240px; padding: 9px 14px 10px; border-radius: 18px;
   background: rgba(255, 255, 255, 0.72); border: 1px solid #fff;
   backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
   box-shadow: 0 12px 30px -14px rgba(60, 80, 90, 0.4);
@@ -125,7 +125,7 @@ h1, h2, p { margin: 0; }
 .map-label strong { font-family: var(--font-display); font-weight: 400; font-size: 17px; color: #4f423d; }
 .map-label__no { font-size: 11px; letter-spacing: 0.2em; font-weight: 700; color: var(--accent); }
 .map-label__tag { font-size: 12px; white-space: pre-line; text-wrap: balance; color: var(--ink-soft); max-height: 0; opacity: 0; overflow: hidden; transition: max-height 0.35s, opacity 0.35s; }
-.map-label.is-lift .map-label__tag { max-height: 40px; opacity: 1; }
+.map-label.is-lift .map-label__tag { max-height: 60px; opacity: 1; }
 .map-label.is-lift { transform: translateY(-6px) scale(1.04); box-shadow: 0 18px 36px -14px rgba(60, 80, 90, 0.5); }
 
 .map__pager { position: absolute; left: 12px; right: 12px; bottom: calc(16px + var(--safe-b)); display: flex; align-items: center; gap: 8px; }
@@ -175,7 +175,7 @@ h1, h2, p { margin: 0; }
 
 /* ---------- 사운드 믹서 ---------- */
 .mixer {
-  position: absolute; right: 20px; top: 96px; width: 356px; z-index: 6;
+  position: absolute; right: 20px; top: 84px; width: 356px; z-index: 6;
   max-height: calc(100% - 120px); display: flex; flex-direction: column;
   border-radius: var(--radius); padding: 14px;
   background: var(--panel); border: 1px solid var(--panel-border); color: var(--text);
@@ -405,17 +405,28 @@ a.pill, a.cta { text-decoration: none; }
 .photo__img { width: auto; max-width: 100%; height: min(60vh, 560px); aspect-ratio: 9 / 16; object-fit: contain; border-radius: 18px; box-shadow: 0 10px 30px -12px rgba(0,0,0,0.35); }
 .photo__img--loading { display: grid; place-items: center; background: #f1e9df; color: #8f8178; font-size: 14px; }
 .photo__actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+.pill--plain { background: #fff; color: #4a3f3a; border: 1.5px solid #e3d6ca; box-shadow: 0 4px 12px -6px rgba(80,60,50,0.35); backdrop-filter: none; }
+.pill--plain:hover { background: #f8f1ea; }
+.modal__x { background: #f1e7dd; color: #5b4a43; border: none; box-shadow: none; font-size: 14px; }
+.modal__x:hover { background: #e9dccf; }
 
 /* 수면 모드 */
-.sleep-overlay { position: fixed; inset: 0; z-index: 40; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 24px; background: rgba(6,8,20,0.93); color: rgba(255,255,255,0.86); cursor: pointer; animation: screen-in 1.2s ease both; text-align: center; }
+.sleep-overlay { position: fixed; inset: 0; z-index: 40; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 24px max(16px, env(safe-area-inset-right, 0px)) 90px max(16px, env(safe-area-inset-left, 0px)); background: rgba(6,8,20,0.93); color: rgba(255,255,255,0.86); cursor: pointer; animation: screen-in 1.2s ease both; text-align: center; }
 .sleep-overlay__glow { position: absolute; width: 340px; height: 340px; border-radius: 50%; background: radial-gradient(circle, rgba(140,150,255,0.18), transparent 65%); animation: sleep-glow 8s ease-in-out infinite; pointer-events: none; }
 @keyframes sleep-glow { 0%, 100% { transform: scale(0.85); opacity: 0.6; } 50% { transform: scale(1.1); opacity: 1; } }
 .sleep-overlay__clock { position: relative; font-family: var(--font-display); font-size: clamp(64px, 14vw, 120px); line-height: 1; font-variant-numeric: tabular-nums; color: rgba(255,255,255,0.78); }
 .sleep-overlay__clock i { font-style: normal; animation: blink 2s steps(1) infinite; }
 @keyframes blink { 50% { opacity: 0.2; } }
 .sleep-overlay__msg { position: relative; max-width: 26em; font-size: 15px; line-height: 1.7; color: rgba(255,255,255,0.6); }
-.sleep-overlay__timer { position: relative; font-size: 13px; color: rgba(255,214,150,0.75); font-variant-numeric: tabular-nums; }
-.sleep-overlay__hint { position: absolute; bottom: calc(28px + var(--safe-b)); font-size: 12px; color: rgba(255,255,255,0.3); }
+.sleep-overlay__timer { position: relative; display: flex; flex-direction: column; align-items: center; gap: 10px; margin-top: 6px; cursor: default; }
+.sleep-overlay__label { font-size: 13.5px; color: rgba(255,214,150,0.8); font-variant-numeric: tabular-nums; }
+.sleep-overlay__chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; max-width: 360px; }
+.sleep-chip { padding: 8px 13px; border-radius: 999px; font-size: 13px; color: rgba(255,255,255,0.7); background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.14); transition: background 0.2s, color 0.2s; }
+.sleep-chip:hover { background: rgba(255,255,255,0.14); color: #fff; }
+.sleep-chip.is-on { background: rgba(255,214,150,0.18); border-color: rgba(255,214,150,0.6); color: #ffe2b0; }
+.sleep-overlay__wake { position: absolute; bottom: calc(26px + var(--safe-b)); padding: 10px 18px; border-radius: 999px; font-size: 13px; color: rgba(255,255,255,0.55); border: 1px solid rgba(255,255,255,0.16); }
+.sleep-overlay__wake:hover { color: #fff; border-color: rgba(255,255,255,0.4); }
+
 
 /* 호흡 가이드 */
 .breath { position: fixed; inset: 0; z-index: 41; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 28px; padding: 24px; background: rgba(28,32,58,0.55); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); color: #fff; animation: screen-in 0.5s ease both; }
@@ -611,4 +622,12 @@ a.pill, a.cta { text-decoration: none; }
 }
 @media (prefers-reduced-motion: reduce) {
   .lowspec__blob, .lowspec__icon, .sleep-overlay__glow { animation: none; }
+}
+
+/* 월드 화면: 제목이 길어져도 오른쪽 위 버튼이 믹서 쪽으로 내려오지 않게 */
+.world .topbar { align-items: flex-start; }
+.world .topbar > .pill, .world .topbar__right { margin-top: 4px; }
+@media (min-width: 761px) and (max-width: 980px) {
+  /* 폭이 좁은 PC 화면에서는 제목을 왼쪽으로 옮겨 믹서 창과 겹치지 않게 */
+  .world .world-title { translate: -120px 0; }
 }

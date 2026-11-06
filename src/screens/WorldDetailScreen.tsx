@@ -2,7 +2,7 @@ import { OrbitControls } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import { audioEngine } from '../audio/AudioEngine';
-import { FavoriteButton } from '../components/FavoriteButton';
+import { FavoriteButton, MeButton } from '../components/FavoriteButton';
 import { ChevronLeft, ChevronRight, MapIcon } from '../components/Icons';
 import { LowSpecStage } from '../components/LowSpecStage';
 import { MuteButton } from '../components/MuteButton';
@@ -132,6 +132,7 @@ export function WorldDetailScreen({ id, navigate }: { id: string; navigate: (r: 
           <StatusPills />
         </div>
         <div className="topbar__right">
+          <MeButton onClick={() => navigate({ name: 'me' })} />
           <FavoriteButton worldId={id} title={world.title} />
           <MuteButton />
         </div>

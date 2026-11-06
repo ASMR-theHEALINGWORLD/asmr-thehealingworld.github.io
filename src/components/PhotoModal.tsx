@@ -114,7 +114,7 @@ export function PhotoModal({ world, canvas, shift, onClose }: { world: WorldDef;
               이미지 저장
             </a>
           )}
-          <button className="pill pill--ghost" onClick={onClose}>
+          <button className="pill pill--plain" onClick={onClose}>
             닫기
           </button>
         </div>
