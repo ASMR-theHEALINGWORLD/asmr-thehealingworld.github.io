@@ -121,7 +121,7 @@ export function Fairy({ color = '#fff4b0', radius = 2, height = 1.4, speed = 0.4
       <group
         onClick={(e) => {
           e.stopPropagation();
-          audioEngine.sfx('chime', 0.3);
+          audioEngine.sfx('sparkle', 0.4);
           push('✨');
         }}
         {...bind}

@@ -8,7 +8,7 @@ export type SynthKind =
   | 'trainRumble' | 'railClack' | 'clockTick' | 'platformSteps' | 'announcement' | 'trainDoor';
 
 /** 인터랙션용 짧은 효과음 */
-export type SfxKind = 'pop' | 'chime' | 'bubble' | 'log' | 'book' | 'splash' | 'tweet' | 'whistle';
+export type SfxKind = 'pop' | 'chime' | 'bubble' | 'log' | 'book' | 'splash' | 'tweet' | 'whistle' | 'honk' | 'meow' | 'jelly' | 'sparkle' | 'whale' | 'vending';
 
 export interface SoundDef {
   id: string;

@@ -232,7 +232,7 @@ function Jelly({ color = '#ffc6e0', phase = 0, ...props }: GroupProps & { color?
         ref={ref}
         onClick={(e) => {
           e.stopPropagation();
-          audioEngine.sfx('chime', 0.35);
+          audioEngine.sfx('jelly', 0.5);
           push('🎐');
         }}
         {...bind}
@@ -398,6 +398,8 @@ export function OceanDiorama({ lite }: DioramaProps) {
 function Whale() {
   const ref = useRef<THREE.Group>(null);
   const tail = useRef<THREE.Group>(null);
+  const { bind } = usePointer();
+  const { push, node } = useEmojiPops();
   useFrame(({ clock }) => {
     const t = clock.elapsedTime * 0.05;
     if (ref.current) {
@@ -409,7 +411,15 @@ function Whale() {
   });
   return (
     <group ref={ref}>
-      <group rotation={[0, Math.PI / 2, 0]}>
+      <group
+        rotation={[0, Math.PI / 2, 0]}
+        onClick={(e) => {
+          e.stopPropagation();
+          audioEngine.sfx('whale', 0.6);
+          push(['🐋', '우우웅~', '💙'][Math.floor(Math.random() * 3)]);
+        }}
+        {...bind}
+      >
         <mesh scale={[1.5, 1.2, 3.2]}>
           <sphereGeometry args={[1, 32, 24]} />
           <Soft color="#7fa8cf" />
@@ -439,6 +449,7 @@ function Whale() {
           </mesh>
         ))}
       </group>
+      {node(3.0)}
     </group>
   );
 }

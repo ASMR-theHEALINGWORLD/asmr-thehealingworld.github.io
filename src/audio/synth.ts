@@ -385,14 +385,18 @@ const GENERATORS: Record<SynthKind, (r: Rand) => Buf> = {
     const N = sec(14);
     const out = new Float32Array(N);
     for (const [t, a] of [[2, 1], [8.5, 0.8]] as const) {
-      const len = sec(0.45);
-      const slide = band(white(len, r), 900, 1.4);
-      const g = grain(len, r, 5, 180, 1.2);
-      for (let j = 0; j < len; j++) slide[j] *= Math.sin((Math.PI * j) / len) * (0.3 + g[j]);
-      addAt(out, sec(t), slide, a * 0.7);
-      addAt(out, sec(t + 0.45), thump(r, 150, 92, 0.05, 0.5), a);
+      const len = sec(0.55);
+      const slide = lp(band(white(len, r), (i) => 1300 + 500 * (i / len), 1.7), 4200);
+      const g = grain(len, r, 6, 120, 1);
+      for (let j = 0; j < len; j++) slide[j] *= Math.pow(Math.sin((Math.PI * j) / len), 1.5) * (0.5 + 0.5 * g[j]);
+      addAt(out, sec(t), slide, a * 0.55);
+      // 둔탁한 '쿵' 대신 종이가 맞닿는 가벼운 '톡'
+      const tap = lp(white(sec(0.05), r), 2400);
+      for (let j = 0; j < tap.length; j++) tap[j] *= Math.exp(-j / (SR * 0.008));
+      addAt(out, sec(t + 0.55), tap, a * 0.35);
+      addAt(out, sec(t + 0.55), thump(r, 320, 250, 0.012, 0.1), a * 0.12);
     }
-    return normalize(reverb(out, 0.2, 0.7), 0.85);
+    return normalize(reverb(out, 0.15, 0.6), 0.75);
   },
   pencil(r) {
     const N = sec(12);
@@ -819,10 +823,95 @@ const SFX: Record<SfxKind, (r: Rand) => Buf> = {
     return out;
   },
   book: (r) => {
-    const len = sec(0.5);
-    const nz = band(hp(white(len, r), 700), (i) => 2500 + 1800 * (i / len), 0.9);
-    for (let j = 0; j < len; j++) nz[j] *= Math.exp(-(j / len) * 6);
+    // 부드러운 종이 스침 (천천히 시작해서 사르르)
+    const len = sec(0.45);
+    const nz = lp(band(white(len, r), (i) => 1800 + 900 * (i / len), 1.4), 5000);
+    for (let j = 0; j < len; j++) {
+      const u = j / len;
+      nz[j] *= Math.min(1, u / 0.15) * Math.exp(-u * 4);
+    }
     return nz;
+  },
+  honk: () => {
+    // 장난감 버스 '빵빵'
+    const out = new Float32Array(sec(0.42));
+    const beep = () =>
+      glide(sec(0.13), (u) => 700 * (1 - 0.04 * u), (u) => Math.min(1, u / 0.06) * Math.min(1, (1 - u) / 0.25), [1, 0.55, 0.35, 0.22, 0.14]);
+    const low = () => glide(sec(0.13), (u) => 560 * (1 - 0.04 * u), (u) => Math.min(1, u / 0.06) * Math.min(1, (1 - u) / 0.25), [1, 0.5, 0.3]);
+    for (const t of [0, 0.2]) {
+      addAt(out, sec(t), beep(), 0.6);
+      addAt(out, sec(t), low(), 0.45);
+    }
+    return out;
+  },
+  meow: () => {
+    // 고양이 '냐옹': 올라갔다 내려오는 음 + 입 모양 울림
+    const len = sec(0.62);
+    const raw = new Float32Array(len);
+    let ph = 0;
+    for (let j = 0; j < len; j++) {
+      const u = j / len;
+      const f = (u < 0.3 ? 520 + 330 * (u / 0.3) : 850 - 380 * ((u - 0.3) / 0.7)) * (1 + 0.012 * Math.sin(TAU * 6 * u * 0.62));
+      ph += f / SR;
+      let v = 0;
+      for (let k = 1; k <= 8; k++) v += Math.sin(TAU * ph * k) / k;
+      raw[j] = v * Math.min(1, u / 0.06) * Math.pow(1 - u, 0.6) * (u < 0.12 ? 0.55 + 0.45 * (u / 0.12) : 1);
+    }
+    const f1 = band(raw, (i) => 900 + 500 * Math.sin(Math.PI * (i / len)), 0.5);
+    const f2 = band(raw, 2600, 0.7);
+    const out = new Float32Array(len);
+    for (let j = 0; j < len; j++) out[j] = f1[j] + f2[j] * 0.5 + raw[j] * 0.08;
+    return reverb(out, 0.12, 0.5);
+  },
+  jelly: (r) => {
+    // 해파리 '뽀용': 물속에서 몽글몽글
+    const len = sec(0.55);
+    const out = glide(
+      len,
+      (u) => (u < 0.45 ? 260 + 300 * (u / 0.45) : 560 - 140 * ((u - 0.45) / 0.55)) * (1 + 0.05 * Math.sin(TAU * 16 * u * 0.55)),
+      (u) => Math.min(1, u / 0.08) * Math.pow(1 - u, 1.2),
+      [1, 0.25],
+    );
+    addAt(out, sec(0.12), bubble(700 + r() * 200, 0.05), 0.3);
+    addAt(out, sec(0.3), bubble(900 + r() * 200, 0.05), 0.25);
+    return lp(out, 1600);
+  },
+  sparkle: (r) => {
+    // 요정 '샤라랑': 빠르게 올라가는 반짝임
+    const notes = [1319, 1568, 1760, 2093, 2349, 2637, 3136];
+    const out = new Float32Array(sec(1.0));
+    notes.forEach((f, i) => addAt(out, sec(i * 0.045), glide(sec(0.35), () => f, (u) => Math.exp(-u * 7) * Math.min(1, u / 0.01), [1, 0.15]), 0.5 - i * 0.03));
+    const sh = hp(white(sec(0.6), r), 6000);
+    for (let j = 0; j < sh.length; j++) sh[j] *= Math.min(1, j / sec(0.1)) * Math.exp(-j / sec(0.18)) * (0.5 + 0.5 * Math.sin(j / 9));
+    addAt(out, sec(0.05), sh, 0.25);
+    return reverb(out, 0.25, 0.7);
+  },
+  whale: () => {
+    // 멀리서 들리는 고래 울음
+    const len = sec(2.2);
+    const call = glide(
+      sec(1.6),
+      (u) => ((1 - u) ** 2 * 170 + 2 * u * (1 - u) * 330 + u * u * 200) * (1 + 0.015 * Math.sin(TAU * 4 * u * 1.6)),
+      (u) => Math.pow(Math.sin(Math.PI * u), 0.8),
+      [1, 0.35, 0.15],
+    );
+    const out = new Float32Array(len);
+    addAt(out, 0, call, 1);
+    return lp(reverb(out, 0.55, 1.6, 0.84), 1800);
+  },
+  vending: (r) => {
+    // 자판기: 버튼 '삑' → 캔이 '덜컹' 떨어지고 '데굴'
+    const out = new Float32Array(sec(1.1));
+    addAt(out, 0, glide(sec(0.09), () => 1320, (u) => Math.min(1, u / 0.05) * (1 - u)), 0.35);
+    addAt(out, sec(0.38), thump(r, 170, 95, 0.045, 0.6), 0.9);
+    const ring = new Float32Array(sec(0.25));
+    for (let j = 0; j < ring.length; j++) {
+      const t = j / SR;
+      ring[j] = (Math.sin(TAU * 880 * t) + 0.6 * Math.sin(TAU * 1460 * t)) * Math.exp(-t / 0.06);
+    }
+    addAt(out, sec(0.38), ring, 0.25);
+    for (const [t, a] of [[0.52, 0.35], [0.62, 0.25], [0.7, 0.18], [0.85, 0.3]] as const) addAt(out, sec(t), thump(r, 240, 160, 0.02, 0.4), a);
+    return out;
   },
   tweet: () => {
     const out = new Float32Array(sec(0.3));

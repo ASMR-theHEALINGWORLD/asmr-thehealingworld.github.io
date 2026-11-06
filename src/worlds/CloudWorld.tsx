@@ -292,8 +292,8 @@ function CloudBus() {
       <group
         onClick={(e) => {
           e.stopPropagation();
-          audioEngine.sfx('whistle', 0.3);
-          push('🚌');
+          audioEngine.sfx('honk', 0.4);
+          push(['🚌', '빵빵!', '💛'][Math.floor(Math.random() * 3)]);
         }}
         {...bind}
       >

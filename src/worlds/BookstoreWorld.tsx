@@ -312,8 +312,8 @@ function Cat(props: GroupProps) {
         onClick={(e) => {
           e.stopPropagation();
           wake.current = performance.now() / 1000;
-          audioEngine.sfx('chime', 0.3);
-          push(['💤', '😺', '♡'][Math.floor(Math.random() * 3)]);
+          audioEngine.sfx('meow', 0.45);
+          push(['냐옹~', '😺', '♡'][Math.floor(Math.random() * 3)]);
         }}
         {...bind}
       >

@@ -366,27 +366,47 @@ function StationHouse(props: GroupProps) {
 }
 
 function VendingMachine(props: GroupProps) {
+  const body = useRef<THREE.Group>(null);
+  const shake = useRef(-10);
+  const { bind } = usePointer();
+  const { push, node } = useEmojiPops();
+  useFrame(() => {
+    const d = performance.now() / 1000 - shake.current;
+    if (body.current) body.current.rotation.z = d > 0.38 && d < 0.7 ? Math.sin((d - 0.38) * 60) * 0.02 * (1 - (d - 0.38) / 0.32) : 0;
+  });
   return (
     <group {...props}>
-      <RoundedBox args={[0.7, 1.4, 0.55]} radius={0.06} position={[0, 0.7, 0]} castShadow>
-        <Soft color="#f2a9b8" />
-      </RoundedBox>
-      <mesh position={[-0.05, 0.9, 0.28]}>
-        <planeGeometry args={[0.48, 0.7]} />
-        <Glow color="#fff2c4" />
-      </mesh>
-      {[0, 1, 2].map((r) =>
-        [0, 1, 2].map((c) => (
-          <mesh key={`${r}${c}`} position={[-0.2 + c * 0.15, 1.12 - r * 0.22, 0.285]}>
-            <cylinderGeometry args={[0.035, 0.035, 0.12, 10]} />
-            <Soft color={['#9ec9e6', '#ffd27a', '#a8d5ba'][(r + c) % 3]} />
-          </mesh>
-        )),
-      )}
-      <mesh position={[0.25, 0.85, 0.285]}>
-        <boxGeometry args={[0.08, 0.3, 0.01]} />
-        <Soft color="#fff" />
-      </mesh>
+      <group
+        ref={body}
+        onClick={(e) => {
+          e.stopPropagation();
+          shake.current = performance.now() / 1000;
+          audioEngine.sfx('vending', 0.55);
+          push(['🥤', '덜컹!', '☕'][Math.floor(Math.random() * 3)]);
+        }}
+        {...bind}
+      >
+        <RoundedBox args={[0.7, 1.4, 0.55]} radius={0.06} position={[0, 0.7, 0]} castShadow>
+          <Soft color="#f2a9b8" />
+        </RoundedBox>
+        <mesh position={[-0.05, 0.9, 0.28]}>
+          <planeGeometry args={[0.48, 0.7]} />
+          <Glow color="#fff2c4" />
+        </mesh>
+        {[0, 1, 2].map((r) =>
+          [0, 1, 2].map((c) => (
+            <mesh key={`${r}${c}`} position={[-0.2 + c * 0.15, 1.12 - r * 0.22, 0.285]}>
+              <cylinderGeometry args={[0.035, 0.035, 0.12, 10]} />
+              <Soft color={['#9ec9e6', '#ffd27a', '#a8d5ba'][(r + c) % 3]} />
+            </mesh>
+          )),
+        )}
+        <mesh position={[0.25, 0.85, 0.285]}>
+          <boxGeometry args={[0.08, 0.3, 0.01]} />
+          <Soft color="#fff" />
+        </mesh>
+      </group>
+      {node(1.7)}
     </group>
   );
 }
