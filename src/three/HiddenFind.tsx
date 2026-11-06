@@ -5,9 +5,20 @@ import { audioEngine } from '../audio/AudioEngine';
 import { WORLDS } from '../data/worlds';
 import { toast } from '../store/toast';
 import { useUser, userActions, userStore } from '../store/userStore';
+import type { SfxKind } from '../types';
 import { Glow, Soft, useEmojiPops, usePointer } from './common';
 
 export type HiddenKind = 'hedgehog' | 'chest' | 'mouse' | 'star' | 'snail' | 'umbrella';
+
+/** 숨은 친구마다 어울리는 소리와 말풍선 */
+const VOICE: Record<HiddenKind, { sfx: SfxKind; say: string }> = {
+  hedgehog: { sfx: 'sniff', say: '킁킁, 뀨!' },
+  chest: { sfx: 'treasure', say: '짜잔!' },
+  mouse: { sfx: 'squeak', say: '찍!' },
+  star: { sfx: 'coin', say: '띠링!' },
+  snail: { sfx: 'slime', say: '뾰옹~' },
+  umbrella: { sfx: 'umbrella', say: '팡!' },
+};
 
 /** 월드마다 하나씩 숨어 있는 작은 친구. 찾으면 스탬프에 별이 생겨요 */
 export function HiddenFind({ worldId, kind, position, rotation = 0 }: { worldId: string; kind: HiddenKind; position: [number, number, number]; rotation?: number }) {
@@ -28,14 +39,13 @@ export function HiddenFind({ worldId, kind, position, rotation = 0 }: { worldId:
     e.stopPropagation();
     hop.current = performance.now() / 1000;
     const isNew = userActions.markFound(worldId);
+    const voice = VOICE[kind];
+    audioEngine.sfx(voice.sfx, 0.5);
+    push(voice.say);
     if (isNew) {
       const n = WORLDS.filter((w) => userStore.get().found[w.id]).length;
-      audioEngine.sfx('chime', 0.5);
-      push('🎉');
+      setTimeout(() => audioEngine.sfx('sparkle', 0.25), 450);
       toast(`숨은 친구를 찾았어요! (${n}/${WORLDS.length})`, '⭐', 3500);
-    } else {
-      audioEngine.sfx('pop', 0.35);
-      push('⭐');
     }
   };
   return (

@@ -245,8 +245,8 @@ function StationClock(props: GroupProps) {
         position={[0, 2.5, 0]}
         onClick={(e) => {
           e.stopPropagation();
-          audioEngine.sfx('chime', 0.35);
-          push('🕰️');
+          audioEngine.sfx('tick', 0.5);
+          push('째깍째깍');
         }}
         {...bind}
       >

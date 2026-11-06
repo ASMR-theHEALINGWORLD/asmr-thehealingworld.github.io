@@ -17,7 +17,7 @@ import { useSession } from '../store/session';
 import { useUser } from '../store/userStore';
 import { CameraIntro, ViewShift } from '../three/common';
 import { HiddenFind } from '../three/HiddenFind';
-import { MyAvatar } from '../three/MyAvatar';
+import { MyAvatar, WalkFloor } from '../three/MyAvatar';
 import { SeasonalEffect } from '../three/Seasonal';
 import { WORLD_SCENES } from '../worlds/registry';
 import type { Route } from '../types';
@@ -97,6 +97,7 @@ export function WorldDetailScreen({ id, navigate }: { id: string; navigate: (r: 
           <scene.Environment />
           <scene.Diorama />
           <MyAvatar spot={scene.avatar} />
+          <WalkFloor area={scene.walk} />
           <HiddenFind worldId={id} {...scene.hidden} />
           <SeasonalEffect underwater={scene.underwater} />
           <CameraIntro position={camPos} target={cam.target} />

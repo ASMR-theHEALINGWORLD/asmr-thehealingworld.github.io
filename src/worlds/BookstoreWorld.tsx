@@ -312,8 +312,9 @@ function Cat(props: GroupProps) {
         onClick={(e) => {
           e.stopPropagation();
           wake.current = performance.now() / 1000;
-          audioEngine.sfx('meow', 0.45);
-          push(['냐옹~', '😺', '♡'][Math.floor(Math.random() * 3)]);
+          const short = Math.random() < 0.5;
+          audioEngine.sfx(short ? 'nyang' : 'meow', 0.45);
+          push(short ? '냥!' : '냐옹~');
         }}
         {...bind}
       >
@@ -352,8 +353,18 @@ function Cat(props: GroupProps) {
 }
 
 function WallClock(props: GroupProps) {
+  const { bind } = usePointer();
+  const { push, node } = useEmojiPops();
   return (
-    <group {...props}>
+    <group
+      {...props}
+      onClick={(e) => {
+        e.stopPropagation();
+        audioEngine.sfx('tick', 0.5);
+        push('째깍째깍');
+      }}
+      {...bind}
+    >
       <mesh rotation={[Math.PI / 2, 0, 0]}>
         <cylinderGeometry args={[0.3, 0.3, 0.06, 28]} />
         <Soft color="#fff8ee" />
@@ -371,6 +382,7 @@ function WallClock(props: GroupProps) {
         <boxGeometry args={[0.018, 0.22, 0.01]} />
         <meshBasicMaterial color="#5a4032" />
       </mesh>
+      {node(0.55)}
     </group>
   );
 }

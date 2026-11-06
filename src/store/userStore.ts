@@ -46,7 +46,7 @@ export interface UserData {
 const KEY = 'healing-world:user:v1';
 
 export const DEFAULT_AVATAR: Avatar = {
-  enabled: false,
+  enabled: true,
   hairStyle: 'bob',
   hair: '#6b4a3a',
   top: '#ffd08a',
