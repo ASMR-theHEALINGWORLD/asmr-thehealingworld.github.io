@@ -22,6 +22,9 @@
 * { box-sizing: border-box; }
 html, body, #root { height: 100%; margin: 0; }
 body {
+  /* 한국어는 어절(띄어쓰기) 단위로 줄바꿈, 너무 긴 단어(주소 등)만 예외로 끊기 */
+  word-break: keep-all;
+  overflow-wrap: break-word;
   background: var(--cream);
   color: var(--ink);
   font-family: var(--font-body);
@@ -121,7 +124,7 @@ h1, h2, p { margin: 0; }
 }
 .map-label strong { font-family: var(--font-display); font-weight: 400; font-size: 17px; color: #4f423d; }
 .map-label__no { font-size: 11px; letter-spacing: 0.2em; font-weight: 700; color: var(--accent); }
-.map-label__tag { font-size: 12px; color: var(--ink-soft); max-height: 0; opacity: 0; overflow: hidden; transition: max-height 0.35s, opacity 0.35s; }
+.map-label__tag { font-size: 12px; text-wrap: balance; color: var(--ink-soft); max-height: 0; opacity: 0; overflow: hidden; transition: max-height 0.35s, opacity 0.35s; }
 .map-label.is-lift .map-label__tag { max-height: 40px; opacity: 1; }
 .map-label.is-lift { transform: translateY(-6px) scale(1.04); box-shadow: 0 18px 36px -14px rgba(60, 80, 90, 0.5); }
 
@@ -132,7 +135,7 @@ h1, h2, p { margin: 0; }
   box-shadow: var(--shadow); display: flex; flex-direction: column; align-items: center; gap: 6px;
 }
 .map__card strong { font-family: var(--font-display); font-weight: 400; font-size: 21px; }
-.map__card p { font-size: 13px; line-height: 1.6; color: var(--ink-soft); }
+.map__card p { font-size: 13px; line-height: 1.6; color: var(--ink-soft); text-wrap: pretty; }
 .map__no { font-size: 11px; letter-spacing: 0.2em; font-weight: 700; }
 .dots { display: flex; gap: 6px; margin: 4px 0; }
 .dots i { width: 6px; height: 6px; border-radius: 3px; background: rgba(74,63,58,0.2); transition: width 0.3s, background 0.3s; }
