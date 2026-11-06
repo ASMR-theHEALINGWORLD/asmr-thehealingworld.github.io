@@ -29,6 +29,7 @@ export function WorldMapScreen({ navigate }: { navigate: (r: Route) => void }) {
   return (
     <div
       className="screen map"
+      data-phase={phase}
       onPointerDown={(e) => (swipe.current = { x: e.clientX, t: Date.now() })}
       onPointerUp={(e) => {
         const s = swipe.current;

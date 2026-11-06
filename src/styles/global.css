@@ -198,13 +198,20 @@ h1, h2, p { margin: 0; }
 .mixer__toggle:hover { background: var(--accent-soft); }
 .mixer.is-open .mixer__toggle { transform: rotate(180deg); }
 
-.mixer__body { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.45s cubic-bezier(.2,.8,.2,1); min-height: 0; }
+.mixer__body { position: relative; flex: 1 1 auto; display: grid; grid-template-rows: minmax(0, 0fr); transition: grid-template-rows 0.45s cubic-bezier(.2,.8,.2,1); min-height: 0; }
 .mixer__body > * { min-height: 0; }
-.mixer.is-open .mixer__body { grid-template-rows: 1fr; }
+.mixer.is-open .mixer__body { grid-template-rows: minmax(0, 1fr); }
 .mixer__body { overflow: hidden; }
-.mixer.is-open .mixer__body { overflow: auto; }
-.mixer__inner { display: flex; flex-direction: column; min-height: 0; }
-.mixer__list { list-style: none; margin: 0; padding: 12px 0 0; display: flex; flex-direction: column; gap: 4px; overflow: hidden; }
+.mixer.is-open .mixer__body { overflow: hidden; }
+.mixer__inner { display: flex; flex-direction: column; min-height: 0; overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; padding-right: 12px; scrollbar-width: none; }
+.mixer__inner::-webkit-scrollbar { display: none; }
+.scroll-rail { position: absolute; top: 14px; right: 1px; bottom: 6px; width: 6px; border-radius: 6px; background: var(--accent-soft); opacity: 0; transition: opacity 0.3s; pointer-events: none; }
+.scroll-rail.is-on { opacity: 1; pointer-events: auto; }
+.scroll-rail__thumb { position: absolute; left: -4px; right: -4px; top: 0; border-radius: 8px; background: transparent; cursor: grab; touch-action: none; }
+.scroll-rail__thumb::after { content: ''; position: absolute; inset: 0 4px; border-radius: 6px; background: var(--accent); opacity: 0.75; }
+.scroll-rail__thumb:active { cursor: grabbing; }
+.mixer__list { list-style: none; margin: 0; padding: 12px 0 0; display: flex; flex-direction: column; gap: 4px; }
+.mixer__inner > * { flex-shrink: 0; }
 .mixer__reset { align-self: center; display: inline-flex; align-items: center; gap: 6px; margin: 8px 0 2px; padding: 6px 12px; border-radius: 999px; font-size: 12.5px; color: var(--sub); overflow: hidden; }
 .mixer__reset:hover { background: var(--accent-soft); color: var(--text); }
 
@@ -227,6 +234,7 @@ h1, h2, p { margin: 0; }
 
 input[type='range'] {
   -webkit-appearance: none; appearance: none; width: 100%; height: 18px; background: transparent; margin: 0; cursor: pointer;
+  touch-action: pan-y; /* 위아래로 쓸면 스크롤, 좌우로 밀면 볼륨 */
 }
 input[type='range']::-webkit-slider-runnable-track {
   height: 6px; border-radius: 6px;
@@ -390,7 +398,7 @@ a.pill, a.cta { text-decoration: none; }
 .modal { position: fixed; inset: 0; z-index: 45; display: grid; place-items: center; padding: 16px; background: rgba(30,26,40,0.42); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); animation: screen-in 0.3s ease both; }
 .modal__card { position: relative; width: min(440px, 100%); max-height: calc(100% - 16px); overflow: auto; padding: 22px; border-radius: 28px; background: #fffaf3; color: #4a3f3a; box-shadow: 0 24px 60px -20px rgba(30,20,20,0.5); animation: toast-in 0.4s cubic-bezier(.3,1.4,.5,1) both; }
 .modal__x { position: absolute; top: 14px; right: 14px; }
-.photo { display: flex; flex-direction: column; gap: 14px; align-items: center; }
+.photo { display: flex; flex-direction: column; gap: 14px; align-items: center; padding-top: 52px; }
 .photo__img { width: auto; max-width: 100%; height: min(60vh, 560px); aspect-ratio: 9 / 16; object-fit: contain; border-radius: 18px; box-shadow: 0 10px 30px -12px rgba(0,0,0,0.35); }
 .photo__img--loading { display: grid; place-items: center; background: #f1e9df; color: #8f8178; font-size: 14px; }
 .photo__actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
@@ -469,6 +477,8 @@ a.pill, a.cta { text-decoration: none; }
 .home[data-phase='night'] .home__comfort span { color: rgba(240,240,255,0.65); }
 .map[data-phase='night'] .map__title h2 { color: #fff3e4; }
 .map[data-phase='night'] .eyebrow, .map[data-phase='night'] .map__hint { color: rgba(230,232,255,0.8); }
+.map[data-phase='night'] .map__title h2 { text-shadow: 0 2px 14px rgba(0,0,0,0.35); }
+.map[data-phase='night'] .map__card .map__fav { color: #ff9aa8; }
 .map[data-phase='night'] .map__hint { background: rgba(255,255,255,0.12); }
 .map[data-phase='sunset'] { background: #f7d2c0; }
 .map[data-phase='night'] { background: #2b3262; }

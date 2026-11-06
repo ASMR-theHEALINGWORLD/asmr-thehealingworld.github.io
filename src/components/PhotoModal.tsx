@@ -78,13 +78,23 @@ export function PhotoModal({ world, canvas, shift, onClose }: { world: WorldDef;
     };
   }, [canvas, world, shift]);
 
+  // ESC 키로도 닫기
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [onClose]);
+
   const fileName = `healingworld-${world.id}-${Date.now()}.jpg`;
   const file = blob ? new File([blob], fileName, { type: 'image/jpeg' }) : null;
   const canShare = !!file && !!navigator.canShare?.({ files: [file] });
 
   return (
-    <div className="modal" role="dialog" aria-label="사진 카드">
-      <div className="modal__card photo">
+    <div className="modal" role="dialog" aria-label="사진 카드" onClick={onClose}>
+      <div className="modal__card photo" onClick={(e) => e.stopPropagation()}>
+        <button className="modal__x icon-btn icon-btn--sm" onClick={onClose} aria-label="사진 카드 닫기" title="닫기">
+          ✕
+        </button>
         <div className="photo__flash" aria-hidden />
         {error ? (
           <p className="card__sub">사진을 만들지 못했어요. 다시 시도해 주세요.</p>

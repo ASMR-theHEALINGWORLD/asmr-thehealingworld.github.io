@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { audioEngine } from '../audio/AudioEngine';
 import { useSoundStore } from '../hooks/useSoundStore';
 import { useIsMobile } from '../hooks/useMediaQuery';
 import type { WorldDef } from '../types';
 import { ChevronUp, PauseIcon, PlayIcon } from './Icons';
 import { MixExtras } from './MixExtras';
+import { ScrollRail } from './ScrollRail';
 
 function Eq({ active }: { active: boolean }) {
   return (
@@ -22,6 +23,7 @@ export function SoundMixer({ world }: { world: WorldDef }) {
   const [open, setOpen] = useState(!isMobile);
   useEffect(() => setOpen(!isMobile), [isMobile]);
   const mix = mixes[world.id];
+  const scrollRef = useRef<HTMLDivElement>(null);
   const activeCount = world.sounds.filter((s) => mix[s.id]?.on).length;
   const live = playing && !muted;
 
@@ -51,7 +53,7 @@ export function SoundMixer({ world }: { world: WorldDef }) {
       </div>
 
       <div className="mixer__body">
-        <div className="mixer__inner">
+        <div className="mixer__inner" ref={scrollRef}>
         <ul className="mixer__list">
           {world.sounds.map((s) => {
             const st = mix[s.id];
@@ -96,6 +98,7 @@ export function SoundMixer({ world }: { world: WorldDef }) {
         </ul>
         <MixExtras world={world} />
         </div>
+        <ScrollRail target={scrollRef} deps={[open, world.id]} />
       </div>
     </aside>
   );
